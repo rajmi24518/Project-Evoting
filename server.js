@@ -117,6 +117,10 @@ app.get('/contactus', (req,res) => {
 app.get('/remember', (req,res) => {
     res.render("for_pass.ejs")
 })
+
+app.get('/verify', (req,res) => {
+    res.render("verify.ejs")
+})
 //end routes
 
 app.listen(4000)
