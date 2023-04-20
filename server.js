@@ -30,7 +30,7 @@ app.post("/register",function(req,res){
     var sql = `INSERT INTO Voters.unauth_user(first_name,middle_name,last_name,national_id,email,phone_number) VALUES('${firstname}','${middlename}','${lastname}','${NID}','${emaill}','${PN}')`;
     connection.query(sql,function(error,result){
     if (error) throw error;
-    res.send('RECORD SUCCESSFULL'+ console.log("success"));
+    res.redirect("/sregister");
     });
     });
     });
@@ -64,6 +64,34 @@ app.post('/login', function(req, res)
         });
     });
 });
+
+app.post('/verify', function(req,res)
+{
+    var nid = req.body.nid;
+    var ph = req.body.phone;
+    connection.connect(function(error)
+    {
+        if (error) throw error;
+        var sql = `SELECT * FROM Voters.Auth_Voters WHERE NID = '${nid}' AND PH_NO = '${ph}' `;
+        connection.query(sql,function(error,result)
+        {
+            if (error) 
+            {
+                throw error;
+            }
+            else if(result.length > 0)
+            {
+
+                res.redirect("/yverify");
+            }
+            else
+            {
+                res.redirect("/nverify");
+            }
+            res.end();
+        });
+    });
+})
 
 /*app.post("/register", async (req, res) => {
     try
@@ -120,6 +148,18 @@ app.get('/remember', (req,res) => {
 
 app.get('/verify', (req,res) => {
     res.render("verify.ejs")
+})
+
+app.get('/yverify', (req,res) => {
+    res.render("verified.ejs")
+})
+
+app.get('/nverify', (req,res) => {
+    res.render("not_verified.ejs")
+})
+
+app.get('/sregister', (req,res) => {
+    res.render("registered.ejs")
 })
 //end routes
 
