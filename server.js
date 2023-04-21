@@ -7,6 +7,8 @@ const saltRounds = 10;
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const randomstring = require('randomstring');
+const ejs = require('ejs');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -15,7 +17,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-
+app.set('view engine', 'ejs');
 const mysql = require("mysql");
 
 const connection = mysql.createConnection({
@@ -89,10 +91,11 @@ app.post("/register", function(req, res) {
   
   app.post('/login', function(req, res) {
     var nid = req.body.nid;
-    var ph = req.body.phone;
+    var email = req.body.Email;
     var pass = PW;
+    var secretKey = 'mySecretKey';
   
-    var sql = `SELECT * FROM Voters.unauth_user WHERE national_id = '${nid}' AND phone_number = '${ph}'`;
+    var sql = `SELECT * FROM Voters.unauth_user WHERE national_id = '${nid}' AND email = '${email}'`;
   
     connection.query(sql, function(error, results) {
       if (error) throw error;
@@ -106,6 +109,24 @@ app.post("/register", function(req, res) {
           if (match) {
             // Passwords match
             console.log(match);
+            var token = email + secretKey + randomstring.generate(10);
+             // Send email with unique link to voting page
+
+          var mailOptions = {
+            from: 'evotingproject2080@gmail.com',
+            to: email,
+            subject: 'Your unique link to the voting page',
+            html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="http://localhost:4000/vote/${token}">http://localhost:4000/vote/${token}</a></p>`
+          };
+
+          transporter.sendMail(mailOptions, function(error, info) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
             res.send('Logged in.');
             console.log("logged in");
           } else {
@@ -218,6 +239,17 @@ app.get('/sregister', (req,res) => {
 app.get('/nregister', (req,res) => {
     res.render("nregistered.ejs")
 })
+// voting page route
+// vote route
+app.get('/vote/:token', function(req, res) {
+  var token = req.params.token;
+  var email = token.replace('mySecretKey', '').slice(0, -10);
+
+  // render the voting page with the email and token data
+  res.render('votingpage', { email: email, token: token });
+});
+
+
 //end routes
 
 app.listen(4000);
