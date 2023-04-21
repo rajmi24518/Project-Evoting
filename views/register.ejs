@@ -11,7 +11,7 @@
 	<nav>
 		<ul>
 			<li><a href="/">Home</a></li>
-			<li><a href="aboutus">About Us</a></li>
+			<!-- <li><a href="#">About Us</a></li> -->
 			<li><a href="contactus">Contact Us</a></li>
 			<li><a href="/">Go back</a></li>
 		</ul>
@@ -75,6 +75,7 @@
 						<input type="number" name="phone" id="phoneNumber" class="input" required>
 					</div>
 				</div>
+				
 			
 				<input type="submit" class="btn" value="Register">
 			</form>
@@ -90,10 +91,12 @@
 			var nationalId = document.getElementById("nationalId").value;
 			var email = document.getElementById("email").value;
 			var phoneNumber = document.getElementById("phoneNumber").value;
+			
 		var nameRegex = /^[A-Za-z\s]+$/;
 		var nationalIdRegex = /^[0-9]{10}$/; 
 		var emailRegex = /^\S+@\S+\.\S+$/; 
-		var phoneNumberRegex = /^[0-9]{10}$/; 
+		var phoneNumberRegex = /^[0-9]{10}$/;
+		 
 		if (!firstName.match(nameRegex)) {
 			alert("Please enter a valid First Name");
 			return false;
@@ -118,6 +121,7 @@
 			alert("Please enter a valid Phone Number");
 			return false;
 		}
+	
 		alert("Form submitted successfully!");
 		return true;
 	}
