@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 const ejs = require('ejs');
+var tokenExpiration = 2* 60 * 1000;
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -94,39 +95,48 @@ app.post("/register", function(req, res) {
     var email = req.body.Email;
     var pass = req.body.password;
     var secretKey = 'mySecretKey';
-  
+     // 1 min in milliseconds
+    
     var sql = `SELECT * FROM Voters.unauth_user WHERE national_id = '${nid}' AND email = '${email}'`;
-  
+    
     connection.query(sql, function(error, results) {
       if (error) throw error;
-  
+    
       if (results.length > 0) {
         var hash = results[0].password;
-  
+    
         bcrypt.compare(pass, hash, function(err, match) {
           if (err) throw err;
-  
+    
           if (match) {
             // Passwords match
             console.log(match);
-            var token = email + secretKey + randomstring.generate(10);
-             // Send email with unique link to voting page
-
-          var mailOptions = {
-            from: 'evotingproject2080@gmail.com',
-            to: email,
-            subject: 'Your unique link to the voting page',
-            html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="http://localhost:4000/vote/${token}">http://localhost:4000/vote/${token}</a></p>`
-          };
-
-          transporter.sendMail(mailOptions, function(error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
-
+            
+            // Generate a token with a timestamp
+            var timestamp = Date.now();
+            var token = email + secretKey + randomstring.generate(10) + timestamp;
+            
+            // Send email with unique link to voting page
+            var mailOptions = {
+              from: 'evotingproject2080@gmail.com',
+              to: email,
+              subject: 'Your unique link to the voting page',
+              html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="http://localhost:4000/vote/${token}">http://localhost:4000/vote/${token}</a></p>`
+            };
+  
+            transporter.sendMail(mailOptions, function(error, info) {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
+  
+            // Set a timeout to delete the token after it expires
+            setTimeout(function() {
+              delete tokens[token];
+            }, tokenExpiration);
+  
             res.send('Logged in.');
             console.log("logged in");
           } else {
@@ -242,15 +252,27 @@ app.get('/nregister', (req,res) => {
 // voting page route
 // vote route
 app.get('/vote/:token', function(req, res) {
+  
+  
   var token = req.params.token;
-  var email = token.replace('mySecretKey', '').slice(0, -10);
-
-  // render the voting page with the email and token data
-  res.render('votingpage', { email: email, token: token });
+  // var email = token.replace('mySecretKey', '').slice(0, -10);
+  if (isValidToken(token)) {
+    
+  res.render('votingpage', {token: token });
+  } else {
+    
+    res.send('Invalid or expired token.');
+  }
 });
 
 
 //end routes
+function isValidToken(token) {
+  var timestamp = token.substring(token.length - 13);
+  var expiration = parseInt(timestamp) + tokenExpiration;
+  return Date.now() < expiration;
+}
+
 
 app.listen(4000);
 function generateRandomPassword(length) {
