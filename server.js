@@ -9,7 +9,9 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 const ejs = require('ejs');
-var tokenExpiration = 2* 60 * 1000;
+var tokenExpiration =  60 * 1000;
+var tokens = {};
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
