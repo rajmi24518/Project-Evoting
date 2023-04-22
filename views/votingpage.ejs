@@ -23,7 +23,42 @@
 			Option 3
 		</label>
 		<br>
+		
 		<input type="submit" value="Submit Vote">
-	</form>
+	</form><h1>Time Remaining:</h1>
+    <div id="timer">30 seconds left</div>
+	<script>
+		// Set the time for the timer in seconds
+	 var timeLeft = 30;
+	 
+	 // Create a timer function that counts down from the specified time
+	 function startTimer() {
+	   // Calculate the number of minutes and seconds left
+	   var minutes = Math.floor(timeLeft / 60);
+	   var seconds = timeLeft % 60;
+	 
+	   // Add leading zeros to the minutes and seconds if necessary
+	   minutes = (minutes < 10 ? "0" : "") + minutes;
+	   seconds = (seconds < 10 ? "0" : "") + seconds;
+	 
+	   // Update the timer element with the new time left
+	   document.getElementById("timer").innerHTML = minutes + ":" + seconds +" " +"seconds left";
+	 
+	   // If the timer has reached 0, close the page
+	   if (timeLeft === 0) {
+		 window.close();
+	   }
+	 
+	   // Decrement the time left by 1 second
+	   timeLeft--;
+	 
+	   // Wait 1 second and then call the function again
+	   setTimeout(startTimer, 1000);
+	 }
+	 
+	 // Call the startTimer function to begin the countdown
+	 startTimer();
+	 
+		 </script>
 </body>
 </html>

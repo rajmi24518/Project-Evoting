@@ -92,7 +92,7 @@ app.post("/register", function(req, res) {
   app.post('/login', function(req, res) {
     var nid = req.body.nid;
     var email = req.body.Email;
-    var pass = PW;
+    var pass = req.body.password;
     var secretKey = 'mySecretKey';
   
     var sql = `SELECT * FROM Voters.unauth_user WHERE national_id = '${nid}' AND email = '${email}'`;
