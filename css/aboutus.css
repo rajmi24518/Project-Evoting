@@ -94,3 +94,50 @@
 .nai{
   background-image: linear-gradient(rgba(109, 87, 128, 0.93),rgba(142, 33, 209, 0.7)),url(img/vote.jpg);
 }
+
+nav{
+  width: 100%;
+  height: 60px;
+  color: white;
+  background-color: #3b0049;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.logo{
+  font-size: 2em;
+  letter-spacing: 2px;
+}
+.menu a{
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 20px;
+  border-radius: 8px;
+  position: relative;
+}
+.menu a:before{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-bottom: 5px white;
+  transition: .5s linear;
+}
+.menu a:hover{
+  border: 1px solid #bc32be;
+}
+.menub a{
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 20px;
+  border-radius: 8px;
+  background: transparent;
+}
+.menub a:hover{
+  border: 1px solid #bc32be;
+}
