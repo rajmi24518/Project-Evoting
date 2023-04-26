@@ -97,50 +97,72 @@ app.post("/register", function(req, res) {
     var email = req.body.Email;
     var pass = req.body.password;
     var secretKey = 'mySecretKey';
-     // 1 min in milliseconds
+    // 1 min in milliseconds
+    var tokenExpiration = 1 * 60 * 1000;
+    var token;
     
-    var sql = `SELECT * FROM Voters.unauth_user WHERE national_id = '${nid}' AND email = '${email}'`;
+    var sql = `SELECT * FROM voters.unauth_user WHERE national_id = '${nid}' AND email = '${email}'`;
     
     connection.query(sql, function(error, results) {
       if (error) throw error;
-    
+      
       if (results.length > 0) {
         var hash = results[0].password;
-    
+        
         bcrypt.compare(pass, hash, function(err, match) {
           if (err) throw err;
-    
+          
           if (match) {
             // Passwords match
             console.log(match);
             
-            // Generate a token with a timestamp
-            var timestamp = Date.now();
-            var token = email + secretKey + randomstring.generate(10) + timestamp;
+            // Check if user has already voted
+            var votedSql = `SELECT * FROM voters.voted_list WHERE national_id = '${nid}'`;
             
-            // Send email with unique link to voting page
-            var mailOptions = {
-              from: 'evotingproject2080@gmail.com',
-              to: email,
-              subject: 'Your unique link to the voting page',
-              html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="http://localhost:4000/vote/${token}">http://localhost:4000/vote/${token}</a></p>`
-            };
-  
-            transporter.sendMail(mailOptions, function(error, info) {
-              if (error) {
-                console.log(error);
+            connection.query(votedSql, function(error, results) {
+              if (error) throw error;
+              
+              if (results.length > 0) {
+                // User has already voted
+                res.send('Already voted.');
               } else {
-                console.log('Email sent: ' + info.response);
+                // User has not voted yet
+                // Insert user into active poll list
+                var activePollSql = `INSERT INTO voters.active_poll_list (national_id) VALUES ('${nid}')`;
+                
+                connection.query(activePollSql, function(error, results) {
+                  if (error) throw error;
+                  
+                  // Generate a token with a timestamp
+                  var timestamp = Date.now();
+                  token = nid + secretKey + randomstring.generate(10) + timestamp;
+                  
+                  // Send email with unique link to voting page
+                  var mailOptions = {
+                    from: 'evotingproject2080@gmail.com',
+                    to: email,
+                    subject: 'Your unique link to the voting page',
+                    html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="http://localhost:4000/vote/${token}">http://localhost:4000/vote/${token}/</a></p>`
+                  };
+                  
+                  transporter.sendMail(mailOptions, function(error, info) {
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                    }
+                  });
+                  
+                  // Set a timeout to delete the token after it expires
+                  setTimeout(function() {
+                    delete tokens[token];
+                  }, tokenExpiration);
+                  
+                  res.send('Logged in.');
+                  console.log("logged in");
+                });
               }
             });
-  
-            // Set a timeout to delete the token after it expires
-            setTimeout(function() {
-              delete tokens[token];
-            }, tokenExpiration);
-  
-            res.send('Logged in.');
-            console.log("logged in");
           } else {
             // Passwords don't match
             res.send('Incorrect password.');
@@ -151,6 +173,7 @@ app.post("/register", function(req, res) {
       }
     });
   });
+  
 
 app.post('/verify', function(req,res)
 {
@@ -203,7 +226,7 @@ app.post('/verify', function(req,res)
         res.redirect("/register")
     }
 })*/
-
+  
 //routes
 app.use("/css", express.static("css"));
 app.use("/img", express.static("img"));
@@ -220,7 +243,32 @@ app.get('/login', (req,res) => {
 app.get('/register', (req,res) => {
     res.render("register.ejs")
 })
+app.get('/result', (req, res) => {
+  const sql = `SELECT candidate, role, COUNT(*) AS count FROM (
+                SELECT president AS candidate, 'president' AS role FROM voters.voted_list
+                UNION ALL
+                SELECT vicepresident AS candidate, 'vice president' AS role FROM voters.voted_list
+                UNION ALL
+                SELECT mayor AS candidate, 'mayor' AS role FROM voters.voted_list
+                UNION ALL
+                SELECT member AS candidate, 'member' AS role FROM voters.voted_list
+              ) AS candidates
+              GROUP BY candidate, role ORDER BY role, count DESC`;
 
+  connection.query(sql, (error, results) => {
+    if (error) {
+      console.error('Error retrieving votes from MySQL database:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Votes retrieved from MySQL database!');
+      const presidentResults = results.filter(result => result.role === 'president');
+      const vicePresidentResults = results.filter(result => result.role === 'vice president');
+      const mayorResults = results.filter(result => result.role === 'mayor');
+      const memberResults = results.filter(result => result.role === 'member');
+      res.render('result', { presidentResults, vicePresidentResults, mayorResults, memberResults });
+    }
+  });
+});
 app.get('/aboutus', (req,res) => {
     res.render("aboutus.ejs")
 })
@@ -257,14 +305,48 @@ app.get('/vote/:token', function(req, res) {
   
   
   var token = req.params.token;
-  // var email = token.replace('mySecretKey', '').slice(0, -10);
+  var secretKey = 'mySecretKey';
+  var nid = token.slice(0, -secretKey.length - 23);
+
+  
+  
   if (isValidToken(token)) {
     
-  res.render('votingpage', {token: token });
+  res.render('votingpage.ejs', {token: token, nid: nid});
   } else {
     
     res.send('Invalid or expired token.');
   }
+});
+app.post('/vote/:token', (req, res) => {
+  const nid = req.body.nid;
+  const president = req.body.president;
+  const vicePresident = req.body.vicepresident;
+  const mayor = req.body.mayor;
+  const member = req.body.member;
+
+  const sql = 'INSERT INTO voters.voted_list (national_id,president, vicepresident,mayor,member) VALUES (?, ?, ?, ?, ?)';
+  const values = [nid,president, vicePresident,mayor,member];
+
+  connection.query(sql, values, (error, result) => {
+    if (error) {
+      console.error('Error inserting vote into MySQL database:', error);
+      res.sendStatus(500);
+    } else {
+      const sql2 = 'DELETE FROM voters.active_poll_list WHERE national_id = ?';
+      const values2 = [nid];
+      
+      connection.query(sql2, values2, (error2, result2) => {
+        if (error2) {
+          console.error('Error deleting user from active poll list:', error2);
+        } else {
+          console.log('User deleted from active poll list');
+        }
+      });
+      console.log('Vote inserted into MySQL database!');
+      res.redirect('/');
+    }
+  });
 });
 
 
