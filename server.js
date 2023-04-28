@@ -119,7 +119,7 @@ app.post("/register", function(req, res) {
             console.log(match);
             
             // Check if user has already voted
-            var votedSql = `SELECT * FROM voters.voted_list WHERE national_id = '${nid}'`;
+            var votedSql = `SELECT * FROM voters.votedperson WHERE national_id = '${nid}'`;
             
             connection.query(votedSql, function(error, results) {
               if (error) throw error;
@@ -382,12 +382,17 @@ app.post('/delete', (req, res) => {
 app.post('/vote/:token', (req, res) => {
   const nid = req.body.nid;
   const president = req.body.president;
-  const vicePresident = req.body.vicepresident;
+  const vicepresident = req.body.vicepresident;
   const mayor = req.body.mayor;
   const member = req.body.member;
-
+  const sql3 = 'INSERT INTO voters.votedperson (national_id) VALUES (?)';
+  const values3 = [nid];
+  connection.query(sql3, values3, (error3, result3) => {
+    if(error3){console.error('error:',error3)}
+  });
+  bcrypt.hash(nid, saltRounds, function(err, hashedNid) {
   const sql = 'INSERT INTO voters.voted_list (national_id,president, vicepresident,mayor,member) VALUES (?, ?, ?, ?, ?)';
-  const values = [nid,president, vicePresident,mayor,member];
+  const values = [hashedNid,president, vicepresident,mayor,member];
 
   connection.query(sql, values, (error, result) => {
     if (error) {
@@ -408,6 +413,7 @@ app.post('/vote/:token', (req, res) => {
       res.redirect('/');
     }
   });
+});
 });
 app.post('/adminlogin', function(req, res) {
   const { u_name, p_name } = req.body;
