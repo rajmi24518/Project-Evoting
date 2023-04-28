@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>Insert</title>
+</head>
+<body>
+    <form action="/insert" method="POST" enctype="multipart/form-data">
+        <label for="name">Candidate Name:</label>
+        <input type="text" id="name" name="name"><br>
+    
+        <label for="position">Position:</label>
+        <select id="position" name="position">
+            <option value="president">President</option>
+            <option value="vicepresident">Vice President</option>
+            <option value="mayor">Mayor</option>
+            <option value="member">Member</option>
+            
+        </select><br>
+    
+        <label for="party">Party:</label>
+        <input type="text" id="party" name="party"><br>
+    
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image"><br>
+    
+        <input type="submit" value="Submit">
+    </form>
+    <form action="/delete" method="POST">
+        <input type="submit" value="Delete All Candidates">
+    </form>
+</body>
+</html>    

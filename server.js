@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const app = express();
 const sessions = require('express-session');
 const bcrypt = require("bcrypt") //importing bcrypt hash
@@ -231,6 +233,7 @@ app.post('/verify', function(req,res)
 app.use("/css", express.static("css"));
 app.use("/img", express.static("img"));
 app.use("/js", express.static("js"));
+app.use("/uploads", express.static("uploads"));
 
 app.get('/', (req,res) => {
     res.render("index.ejs")
@@ -296,27 +299,85 @@ app.get('/nverify', (req,res) => {
 app.get('/sregister', (req,res) => {
     res.render("registered.ejs")
 })
+app.get('/adminpage', (req,res) => {
+  res.render("adminpage.ejs")
+})
+app.get('/adminlogin', (req,res) => {
+  res.render("admin_login.ejs")
+})
 app.get('/nregister', (req,res) => {
     res.render("nregistered.ejs")
 })
 // voting page route
 // vote route
 app.get('/vote/:token', function(req, res) {
-  
-  
-  var token = req.params.token;
-  var secretKey = 'mySecretKey';
-  var nid = token.slice(0, -secretKey.length - 23);
+  // define variables in outer scope
+  let candidates;
+  let viceCandidates;
+  let mayorCandidates;
+  let memberCandidates;
 
-  
-  
-  if (isValidToken(token)) {
-    
-  res.render('votingpage.ejs', {token: token, nid: nid});
-  } else {
-    
-    res.send('Invalid or expired token.');
-  }
+  // retrieve presidential candidates from MySQL database
+  connection.query('SELECT * FROM candidates WHERE position = "president"', (err, rows, fields) => {
+      if (err) throw err;
+      candidates = rows;
+
+      // retrieve vice presidential candidates from MySQL database
+      connection.query('SELECT * FROM candidates WHERE position = "vicepresident"', (err, rows, fields) => {
+          if (err) throw err;
+          viceCandidates = rows;
+
+          // retrieve mayor candidates from MySQL database
+          connection.query('SELECT * FROM candidates WHERE position = "mayor"', (err, rows, fields) => {
+              if (err) throw err;
+              mayorCandidates = rows;
+
+              // retrieve member candidates from MySQL database
+              connection.query('SELECT * FROM candidates WHERE position = "member"', (err, rows, fields) => {
+                  if (err) throw err;
+                  memberCandidates = rows;
+
+                  // get token and nid from request parameters
+                  var token = req.params.token;
+                  var secretKey = 'mySecretKey';
+                  var nid = token.slice(0, -secretKey.length - 23);
+
+                  // check if token is valid and render voting page
+                  if (isValidToken(token)) {
+                      res.render('votingpage.ejs', {
+                          token: token,
+                          nid: nid,
+                          candidates: candidates,
+                          viceCandidates: viceCandidates,
+                          mayorCandidates: mayorCandidates,
+                          memberCandidates: memberCandidates
+                      });
+                  } else {
+                      res.send('Invalid or expired token.');
+                  }
+              });
+          });
+      });
+  });
+});
+app.post('/insert', upload.single('image'), (req, res) => {
+  const { name, position, party } = req.body;
+  const imagePath = req.file ? req.file.path : null;
+
+  connection.query('INSERT INTO candidates (name, position, party, image) VALUES (?, ?, ?, ?)', [name, position, party, imagePath], (err, result) => {
+      if (err) throw err;
+
+      console.log('New candidate added to database');
+      res.redirect('/adminpage');
+  });
+});
+app.post('/delete', (req, res) => {
+  connection.query('DELETE FROM candidates', (err, result) => {
+      if (err) throw err;
+
+      console.log('All candidates deleted from database');
+      res.redirect('/adminpage');
+  });
 });
 app.post('/vote/:token', (req, res) => {
   const nid = req.body.nid;
@@ -345,6 +406,24 @@ app.post('/vote/:token', (req, res) => {
       });
       console.log('Vote inserted into MySQL database!');
       res.redirect('/');
+    }
+  });
+});
+app.post('/adminlogin', function(req, res) {
+  const { u_name, p_name } = req.body;
+
+  const sql = `SELECT * FROM adminlogin WHERE username = ? AND password = ?`;
+  const values = [u_name, p_name];
+
+  connection.query(sql, values, function(err, result) {
+    if (err) throw err;
+
+    if (result.length > 0) {
+      // Login successful
+      res.redirect('/adminpage');
+    } else {
+      // Login failed
+      res.send('Invalid username or password');
     }
   });
 });

@@ -9,196 +9,77 @@
 	<h4>your nid is <%=nid%></h4>
 	<section class="candidates">
 		<h2>Presidential Candidates</h2>
-		<form action="/vote/<%= token %>" method="POST">
-		
-			<div class="all-candidates">
+		<form action="/vote/<%= token %>" method="POST" enctype="multipart/form-data">
+			<div class="all-candidates">	
+				<% for(var i=0; i< candidates.length; i++) { %>
 				<div class="candidate">
-					<img src="/img/candidate.jpg">
+					<img src="/<%= candidates[i].image %>">
 					<div class="candidate-info">
-						<h4 class="candidate-name">Ishan</h4>
-						<p class="candidate-party">Republican Party</p>
+						<h4 class="candidate-name"><%= candidates[i].name %></h4>
+						<p class="candidate-party"><%= candidates[i].party %></p>
 						<label>
-							<input type="radio" name="president" value="Ishan">
+							<input type="radio" name="president" value="<%= candidates[i].name %>">
 							Vote
 						</label>
 					</div>
 				</div>
-				<div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Sushant</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="president" value="Sushant">
-							Vote
-						</label>
-					</div>
-				</div>
-				<div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Bigyan</h4>
-						<p class="candidate-party">Independent Party</p>
-						<label>
-							<input type="radio" name="president" value="Bigyan">
-							Vote
-						</label>
-					</div>
-				</div>
-				<div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Love</h4>
-						<p class="candidate-party">Football Party</p>
-						<label>
-							<input type="radio" name="president" value="Love">
-							Vote	
-						</label>
-					</div>
-				</div>
+				<% } %>
 			</div>
 			<h2>Vice Presidential Candidates</h2>
 			<div class="all-candidates">
+				<% for(var i=0; i< viceCandidates.length; i++) { %>
 				<div class="candidate">
-					<img src="/img/candidate.jpg">
+					<img src="/<%= viceCandidates[i].image %>">
 					<div class="candidate-info">
-						<h4 class="candidate-name">Shreyash</h4>
-						<p class="candidate-party">Republican Party</p>
+						<h4 class="candidate-name"><%= viceCandidates[i].name %></h4>
+						<p class="candidate-party"><%= viceCandidates[i].party %></p>
 						<label>
-							<input type="radio" name="vicepresident" value="Shreyash">
+							<input type="radio" name="vicepresident" value="<%= viceCandidates[i].name %>">
 							Vote
 						</label>
 					</div>
 				</div>
-				<div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Suyog</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="vicepresident" value="Suyog">
-							Vote
-						</label>
-					</div>
-				</div>
-                <div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">mukul</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="vicepresident" value="mukul">
-							Vote
-						</label>
-					</div>
-				</div><div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">bigya</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="vicepresident" value="Bigya">
-							Vote
-						</label>
-					</div>
-				</div>
-            </div>
+				<% } %>
+			</div>
+			
 			<h2>Mayor Candidates</h2>
 			<div class="all-candidates">
+				<% for(var i=0; i< mayorCandidates.length; i++) { %>
 				<div class="candidate">
-					<img src="/img/candidate.jpg">
+					<img src="/<%= mayorCandidates[i].image %>">
 					<div class="candidate-info">
-						<h4 class="candidate-name">Anish Bharati</h4>
-						<p class="candidate-party">Republican Party</p>
+						<h4 class="candidate-name"><%= mayorCandidates[i].name %></h4>
+						<p class="candidate-party"><%= mayorCandidates[i].party %></p>
 						<label>
-							<input type="radio" name="mayor" value="Anish">
+							<input type="radio" name="mayor" value="<%= mayorCandidates[i].name %>">
 							Vote
 						</label>
 					</div>
 				</div>
-				<div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Aayush</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="mayor" value="Aayush">
-							Vote
-						</label>
-					</div>
-				</div>
-                <div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Sabin</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="mayor" value="Sabin">
-							Vote
-						</label>
-					</div>
-				</div><div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Raghav</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="mayor" value="raghav">
-							Vote
-						</label>
-					</div>
-				</div>
-            </div>
-			<h2>Parliament member Candidates</h2>
+				<% } %>
+			</div>
+			
+			<h2>Member Candidates</h2>
 			<div class="all-candidates">
+				<% for(var i=0; i< memberCandidates.length; i++) { %>
 				<div class="candidate">
-					<img src="/img/candidate.jpg">
+					<img src="/<%= memberCandidates[i].image %>">
 					<div class="candidate-info">
-						<h4 class="candidate-name">Binayak</h4>
-						<p class="candidate-party">Republican Party</p>
+						<h4 class="candidate-name"><%= memberCandidates[i].name %></h4>
+						<p class="candidate-party"><%= memberCandidates[i].party %></p>
 						<label>
-							<input type="radio" name="member" value="Binayak">
+							<input type="radio" name="member" value="<%= memberCandidates[i].name %>">
 							Vote
 						</label>
 					</div>
 				</div>
-				<div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">kush</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="member" value="Kush">
-							Vote
-						</label>
-					</div>
-				</div>
-                <div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">Abhash</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="member" value="Abhash">
-							Vote
-						</label>
-					</div>
-				</div><div class="candidate">
-					<img src="/img/candidate.jpg">
-					<div class="candidate-info">
-						<h4 class="candidate-name">raaj</h4>
-						<p class="candidate-party">Democratic Party</p>
-						<label>
-							<input type="radio" name="member" value="Raaj">
-							Vote
-						</label>
-					</div>
-				</div>
-            </div>
+				<% } %>
+			</div>
 			<label><input type="hidden" name="nid" value="<%= nid %>"></label>
-			<button type="submit">Submit Vote</button>
+			<input type="submit" value="Submit Vote">
 		</form>
 	</section>
+	
 	<h1>Time Remaining:--> </h1>
 
     <div id="timer">30 seconds left</div> 

@@ -18,7 +18,7 @@
 	</nav>
 	<div class="container">
 		<div class="login-content">
-			<form action="register" method="POST" onsubmit="return validateForm()">
+			<form action="/adminlogin" method="POST">
 				<h2 class="title">admin login</h2>
 				<div class="input-div one">
 					<div class="i">
@@ -48,23 +48,5 @@
 	</div>
 
 	<script type="text/javascript" src="js/signup.js"></script>
-	<script>
-		function validateForm() {
-			var UserName = document.getElementById("UserName").value;
-			var Password = document.getElementById("Password").value;
-			
-		if (!userName.match(nameRegex)) {
-			alert("Please enter a valid user Name");
-			return false;
-		}
-		if (Password !== "" && !Password.match(nameRegex)) {
-			alert("Please enter a valid password");
-			return false;
-		}
-		
-		alert("Form submitted successfully!");
-		return true;
-	}
-</script>
 </body>
 </html>
