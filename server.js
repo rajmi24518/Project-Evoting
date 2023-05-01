@@ -160,7 +160,7 @@ app.post("/register", function(req, res) {
                     delete tokens[token];
                   }, tokenExpiration);
                   
-                  res.send('Logged in.');
+                  res.redirect("/loggedin");
                   console.log("logged in");
                 });
               }
@@ -272,6 +272,9 @@ app.get('/result', (req, res) => {
     }
   });
 });
+app.get('/loggedin', (req,res) => {
+  res.render("loggedin.ejs")
+})
 app.get('/aboutus', (req,res) => {
     res.render("aboutus.ejs")
 })
