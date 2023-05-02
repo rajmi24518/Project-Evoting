@@ -26,10 +26,10 @@ app.set('view engine', 'ejs');
 const mysql = require("mysql");
 
 const connection = mysql.createConnection({
-    host:"localhost",
-    database:"voters",
-    user:"root",
-    password:"root123"
+    host:"sql12.freesqldatabase.com",
+    database:"sql12615458",
+    user:"sql12615458",
+    password:"zhKv5KC99Q"
 });
 app.use(bodyParser.json());
 
@@ -47,7 +47,7 @@ app.post("/register", function(req, res) {
     console.log('Pass:',PW);
   
     // Check if NID exists in nidcheck vanni table ma //tannai nid haru store huncha
-    var sql_check = `SELECT * FROM voters.nidcheck WHERE national_id='${NID}'`;
+    var sql_check = `SELECT * FROM sql12615458.nidcheck WHERE national_id='${NID}'`;
     connection.query(sql_check, function(error, result) {
       if (error) throw error;
       if (result.length > 0) {
@@ -55,7 +55,7 @@ app.post("/register", function(req, res) {
         bcrypt.hash(PW, saltRounds, function(err, hash) {
           if (err) throw err;
   
-          var sql_insert = `INSERT INTO voters.unauth_user(first_name, middle_name, last_name, national_id, email, phone_number, password) VALUES('${firstname}', '${middlename}', '${lastname}', '${NID}', '${emaill}', '${PN}', '${hash}')`;
+          var sql_insert = `INSERT INTO sql12615458.unauth_user(first_name, middle_name, last_name, national_id, email, phone_number, password) VALUES('${firstname}', '${middlename}', '${lastname}', '${NID}', '${emaill}', '${PN}', '${hash}')`;
   
           connection.query(sql_insert, function(error, result) {
             if (error) throw error;
@@ -103,7 +103,7 @@ app.post("/register", function(req, res) {
     var tokenExpiration = 1 * 60 * 1000;
     var token;
     
-    var sql = `SELECT * FROM voters.unauth_user WHERE national_id = '${nid}' AND email = '${email}'`;
+    var sql = `SELECT * FROM sql12615458.unauth_user WHERE national_id = '${nid}' AND email = '${email}'`;
     
     connection.query(sql, function(error, results) {
       if (error) throw error;
@@ -119,7 +119,7 @@ app.post("/register", function(req, res) {
             console.log(match);
             
             // Check if user has already voted
-            var votedSql = `SELECT * FROM voters.votedperson WHERE national_id = '${nid}'`;
+            var votedSql = `SELECT * FROM sql12615458.votedperson WHERE national_id = '${nid}'`;
             
             connection.query(votedSql, function(error, results) {
               if (error) throw error;
@@ -130,7 +130,7 @@ app.post("/register", function(req, res) {
               } else {
                 // User has not voted yet
                 // Insert user into active poll list
-                var activePollSql = `INSERT INTO voters.active_poll_list (national_id) VALUES ('${nid}')`;
+                var activePollSql = `INSERT INTO sql12615458.active_poll_list (national_id) VALUES ('${nid}')`;
                 
                 connection.query(activePollSql, function(error, results) {
                   if (error) throw error;
@@ -184,7 +184,7 @@ app.post('/verify', function(req,res)
     connection.connect(function(error)
     {
         if (error) throw error;
-        var sql = `SELECT * FROM Voters.Auth_Voters WHERE NID = '${nid}' AND PH_NO = '${ph}' `;
+        var sql = `SELECT * FROM sql12615458.Auth_Voters WHERE NID = '${nid}' AND PH_NO = '${ph}' `;
         connection.query(sql,function(error,result)
         {
             if (error) 
@@ -248,13 +248,13 @@ app.get('/register', (req,res) => {
 })
 app.get('/result', (req, res) => {
   const sql = `SELECT candidate, role, COUNT(*) AS count FROM (
-                SELECT president AS candidate, 'president' AS role FROM voters.voted_list
+                SELECT president AS candidate, 'president' AS role FROM sql12615458.voted_list
                 UNION ALL
-                SELECT vicepresident AS candidate, 'vice president' AS role FROM voters.voted_list
+                SELECT vicepresident AS candidate, 'vice president' AS role FROM sql12615458.voted_list
                 UNION ALL
-                SELECT mayor AS candidate, 'mayor' AS role FROM voters.voted_list
+                SELECT mayor AS candidate, 'mayor' AS role FROM sql12615458.voted_list
                 UNION ALL
-                SELECT member AS candidate, 'member' AS role FROM voters.voted_list
+                SELECT member AS candidate, 'member' AS role FROM sql12615458.voted_list
               ) AS candidates
               GROUP BY candidate, role ORDER BY role, count DESC`;
 
@@ -388,13 +388,13 @@ app.post('/vote/:token', (req, res) => {
   const vicepresident = req.body.vicepresident;
   const mayor = req.body.mayor;
   const member = req.body.member;
-  const sql3 = 'INSERT INTO voters.votedperson (national_id) VALUES (?)';
+  const sql3 = 'INSERT INTO sql12615458.votedperson (national_id) VALUES (?)';
   const values3 = [nid];
   connection.query(sql3, values3, (error3, result3) => {
     if(error3){console.error('error:',error3)}
   });
   bcrypt.hash(nid, saltRounds, function(err, hashedNid) {
-  const sql = 'INSERT INTO voters.voted_list (national_id,president, vicepresident,mayor,member) VALUES (?, ?, ?, ?, ?)';
+  const sql = 'INSERT INTO sql12615458.voted_list (national_id,president, vicepresident,mayor,member) VALUES (?, ?, ?, ?, ?)';
   const values = [hashedNid,president, vicepresident,mayor,member];
 
   connection.query(sql, values, (error, result) => {
@@ -402,7 +402,7 @@ app.post('/vote/:token', (req, res) => {
       console.error('Error inserting vote into MySQL database:', error);
       res.sendStatus(500);
     } else {
-      const sql2 = 'DELETE FROM voters.active_poll_list WHERE national_id = ?';
+      const sql2 = 'DELETE FROM sql12615458.active_poll_list WHERE national_id = ?';
       const values2 = [nid];
       
       connection.query(sql2, values2, (error2, result2) => {
