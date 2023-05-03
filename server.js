@@ -52,7 +52,11 @@ app.post("/register", function(req, res) {
     connection.query(sql_check, function(error, result) {
       if (error) throw error;
       if (result.length > 0) {
-        var sql = ` INSERT INTO sql12615458.verified_users(NID, PH_NO) VALUES('${NID}', '${PN}')`;
+        var sql = `INSERT INTO sql12615458.verified_users(NID, PH_NO) VALUES('${NID}', '${PN}')`;
+        connection.query(sql, function(error, result) {
+          if (error) throw error;
+          console.log("verified.");
+        });
         // NID exists in other table, insert record in unauth_user table
         bcrypt.hash(PW, saltRounds, function(err, hash) {
           if (err) throw err;
