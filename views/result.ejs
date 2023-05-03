@@ -1,82 +1,87 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Vote Results</title>
-</head>
-<body>
-  <h1>Vote Results</h1>
+  <head>
+    <title>Vote Results</title>
+    <link rel="stylesheet"href="css/result.css">
   
-  <h2>President</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Candidate</th>
-        <th>Vote Count</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% presidentResults.forEach(result => { %>
+  </head>
+  <body>
+    <div class="container">
+    <h1>Vote Results</h1>
+    
+    <h2>President</h2>
+    <table class="content-table">
+      <thead>
         <tr>
-          <td><%= result.candidate %></td>
-          <td><%= result.count %></td>
+          <th>Candidate</th>
+          <th>Vote Count</th>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  
-  <h2>Vice President</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Candidate</th>
-        <th>Vote Count</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% vicePresidentResults.forEach(result => { %>
+      </thead>
+      <tbody>
+        <% presidentResults.forEach(result => { %>
+          <tr>
+            <td><%= result.candidate %></td>
+            <td><%= result.count %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    
+    <h2>Vice President</h2>
+    <table class="content-table">
+      <thead>
         <tr>
-          <td><%= result.candidate %></td>
-          <td><%= result.count %></td>
+          <th>Candidate</th>
+          <th>Vote Count</th>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  
-  <h2>Mayor</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Candidate</th>
-        <th>Vote Count</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% mayorResults.forEach(result => { %>
+      </thead>
+      <tbody>
+        <% vicePresidentResults.forEach(result => { %>
+          <tr>
+            <td><%= result.candidate %></td>
+            <td><%= result.count %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    
+    <h2>Mayor</h2>
+    <table class="content-table">
+      <thead>
         <tr>
-          <td><%= result.candidate %></td>
-          <td><%= result.count %></td>
+          <th>Candidate</th>
+          <th>Vote Count</th>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  
-  <h2>Member</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Candidate</th>
-        <th>Vote Count</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% memberResults.forEach(result => { %>
+      </thead>
+      <tbody>
+        <% mayorResults.forEach(result => { %>
+          <tr>
+            <td><%= result.candidate %></td>
+            <td><%= result.count %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    
+    <h2>Member</h2>
+    <table class="content-table">
+      <thead>
         <tr>
-          <td><%= result.candidate %></td>
-          <td><%= result.count %></td>
+          <th>Candidate</th>
+          <th>Vote Count</th>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% memberResults.forEach(result => { %>
+          <tr>
+            <td><%= result.candidate %></td>
+            <td><%= result.count %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>Thank you
+  <a href="/">Home</a>
+  </div>
   
-</body>
+  </body>
 </html>

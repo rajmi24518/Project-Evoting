@@ -311,6 +311,9 @@ app.get('/adminlogin', (req,res) => {
 app.get('/nregister', (req,res) => {
     res.render("nregistered.ejs")
 })
+app.get('/aftervoted', (req,res) => {
+  res.render("aftervoted.ejs")
+})
 // voting page route
 // vote route
 app.get('/vote/:token', function(req, res) {
@@ -413,7 +416,7 @@ app.post('/vote/:token', (req, res) => {
         }
       });
       console.log('Vote inserted into MySQL database!');
-      res.redirect('/');
+      res.redirect('/aftervoted');
     }
   });
 });
