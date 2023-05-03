@@ -36,6 +36,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({extended: false}))
 app.use(bodyParser.urlencoded({extended: true}));
 var PW = generateRandomPassword(10);
+
 app.post("/register", function(req, res) {
     var firstname = req.body.f_name;
     var middlename = req.body.m_name;
@@ -51,12 +52,11 @@ app.post("/register", function(req, res) {
     connection.query(sql_check, function(error, result) {
       if (error) throw error;
       if (result.length > 0) {
+        var sql = ` INSERT INTO sql12615458.verified_users(NID, PH_NO) VALUES('${NID}', '${PN}')`;
         // NID exists in other table, insert record in unauth_user table
         bcrypt.hash(PW, saltRounds, function(err, hash) {
           if (err) throw err;
-  
           var sql_insert = `INSERT INTO sql12615458.unauth_user(first_name, middle_name, last_name, national_id, email, phone_number, password) VALUES('${firstname}', '${middlename}', '${lastname}', '${NID}', '${emaill}', '${PN}', '${hash}')`;
-  
           connection.query(sql_insert, function(error, result) {
             if (error) throw error;
             res.redirect("/sregister");
@@ -181,27 +181,27 @@ app.post('/verify', function(req,res)
 {
     var nid = req.body.nid;
     var ph = req.body.phone;
-    connection.connect(function(error)
+    connection.query(function(error)
     {
-        if (error) throw error;
-        var sql = `SELECT * FROM sql12615458.Auth_Voters WHERE NID = '${nid}' AND PH_NO = '${ph}' `;
-        connection.query(sql,function(error,result)
-        {
-            if (error) 
-            {
-                throw error;
-            }
-            else if(result.length > 0)
-            {
-
-                res.redirect("/yverify");
-            }
-            else
-            {
-                res.redirect("/nverify");
-            }
-            res.end();
-        });
+          var sql = `SELECT * FROM sql12615458.verified_users WHERE NID = '${nid}' AND PH_NO = '${ph}' `;
+          connection.query(sql,function(error,result)
+          {
+              if (error) 
+              {
+                  throw error;
+              }
+              else if(result.length > 0)
+              {
+  
+                  res.redirect("/yverify");
+              }
+              else
+              {
+                  res.redirect("/nverify");
+              }
+              res.end();
+          });
+        
     });
 })
 
@@ -426,7 +426,6 @@ app.post('/adminlogin', function(req, res) {
 
   connection.query(sql, values, function(err, result) {
     if (err) throw err;
-
     if (result.length > 0) {
       // Login successful
       res.redirect('/adminpage');
