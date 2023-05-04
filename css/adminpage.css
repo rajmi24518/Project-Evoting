@@ -98,3 +98,14 @@ label {
   .custom-btn:hover {
     background-position: right;
   }
+  .delete-container {
+    position: absolute;
+    top:0;
+    right: 3;
+    padding: 3rem;
+  }
+  
+.delete-btn {
+  display: block;
+  margin: 0 auto;
+}

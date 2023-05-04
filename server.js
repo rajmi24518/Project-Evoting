@@ -381,13 +381,28 @@ app.post('/insert', upload.single('image'), (req, res) => {
       res.redirect('/adminpage');
   });
 });
-app.post('/delete', (req, res) => {
+app.post('/cdelete', (req, res) => {
   connection.query('DELETE FROM candidates', (err, result) => {
       if (err) throw err;
 
       console.log('All candidates deleted from database');
       res.redirect('/adminpage');
   });
+});
+app.post('/vdelete', (req, res) => {
+  connection.query('DELETE FROM votedperson', (err, result) => {
+      if (err) throw err;
+
+      console.log('All votedperson nid  deleted from database');
+      
+  });
+  connection.query('DELETE FROM voted_list', (err, result) => {
+    if (err) throw err;
+
+    console.log('All votedlist data deleted from database');
+    
+});
+res.redirect('/adminpage');
 });
 app.post('/vote/:token', (req, res) => {
   const nid = req.body.nid;
