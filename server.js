@@ -309,6 +309,9 @@ app.get('/nverify', (req,res) => {
 app.get('/sregister', (req,res) => {
     res.render("registered.ejs")
 })
+app.get('/howtovote', (req,res) => {
+  res.render("howtovote.ejs")
+})
 app.get('/adminpage', (req,res) => {
   res.render("adminpage.ejs")
 })
