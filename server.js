@@ -130,7 +130,7 @@ app.post("/register", function(req, res) {
               
               if (results.length > 0) {
                 // User has already voted
-                res.send('Already voted.');
+                res.redirect("/alreadyvoted");
               } else {
                 // User has not voted yet
                 // Insert user into active poll list
@@ -171,11 +171,11 @@ app.post("/register", function(req, res) {
             });
           } else {
             // Passwords don't match
-            res.send('Incorrect password.');
+            res.redirect("/incorrect");
           }
         });
       } else {
-        res.send('Incorrect info.');
+        res.redirect("/incorrect");
       }
     });
   });
@@ -314,6 +314,12 @@ app.get('/adminlogin', (req,res) => {
 })
 app.get('/nregister', (req,res) => {
     res.render("nregistered.ejs")
+})
+app.get('/incorrect', (req,res) => {
+  res.render("incorrectpassword.ejs")
+})
+app.get('/alreadyvoted', (req,res) => {
+  res.render("alreadyvoted.ejs")
 })
 app.get('/aftervoted', (req,res) => {
   res.render("aftervoted.ejs")
