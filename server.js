@@ -298,6 +298,9 @@ app.get('/verify', (req,res) => {
 app.get('/yverify', (req,res) => {
     res.render("verified.ejs")
 })
+app.get('/invalidtoken', (req,res) => {
+  res.render("tokenexpired.ejs")
+})
 
 app.get('/nverify', (req,res) => {
     res.render("not_verified.ejs")
@@ -369,7 +372,7 @@ app.get('/vote/:token', function(req, res) {
                           memberCandidates: memberCandidates
                       });
                   } else {
-                      res.send('Invalid or expired token.');
+                      res.redirect('/invalidtoken');
                   }
               });
           });
