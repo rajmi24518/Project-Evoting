@@ -404,6 +404,21 @@ app.post('/vdelete', (req, res) => {
 });
 res.redirect('/adminpage');
 });
+app.post('/udelete', (req, res) => {
+  connection.query('DELETE FROM unauth_user', (err, result) => {
+      if (err) throw err;
+
+      console.log('All user data deleted from database');
+      
+  });
+  connection.query('DELETE FROM verified_users', (err, result) => {
+    if (err) throw err;
+
+    console.log('All verified user data deleted from database');
+    
+});
+  res.redirect('/adminpage');
+});
 app.post('/vote/:token', (req, res) => {
   const nid = req.body.nid;
   const president = req.body.president;
