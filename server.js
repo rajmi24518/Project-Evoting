@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
+require('dotenv').config();
 const ejs = require('ejs');
 var tokenExpiration =  60 * 1000;
 var tokens = {};
@@ -17,8 +18,8 @@ var tokens = {};
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'evotingproject2080@gmail.com',
-    pass: 'tothdngbgmmiswxb'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD
   }
 });
 
@@ -26,10 +27,10 @@ app.set('view engine', 'ejs');
 const mysql = require("mysql");
 
 const connection = mysql.createConnection({
-    host:"sql12.freesqldatabase.com",
-    database:"sql12615458",
-    user:"sql12615458",
-    password:"zhKv5KC99Q"
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD
 });
 app.use(bodyParser.json());
 
