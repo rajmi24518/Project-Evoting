@@ -14,6 +14,7 @@ require('dotenv').config();
 const ejs = require('ejs');
 var tokenExpiration =  60 * 1000;
 var tokens = {};
+const port = process.env.PORT || 4000;
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -495,9 +496,12 @@ function isValidToken(token) {
 }
 
 
-app.listen(4000);
+
 function generateRandomPassword(length) {
   return crypto.randomBytes(Math.ceil(length/2))
           .toString('hex')
           .slice(0,length);
 }
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
