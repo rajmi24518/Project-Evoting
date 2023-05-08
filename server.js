@@ -20,7 +20,7 @@ app.use(session({
   secret: 'your secret key',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } 
+  cookie: { secure: false,maxAge: 24 * 60 * 60 * 1000 } 
 }));
 
 const transporter = nodemailer.createTransport({
@@ -45,6 +45,11 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({extended: false}))
 app.use(bodyParser.urlencoded({extended: true}));
 var PW = generateRandomPassword(10);
+app.post('/adminlogout', (req, res) => {
+  delete req.session.isAuthenticated;
+  delete req.session.user;
+  res.redirect('/');  
+});
 
 app.post("/register", function(req, res) {
     var firstname = req.body.f_name;
@@ -322,9 +327,15 @@ app.get('/sregister', (req,res) => {
 app.get('/howtovote', (req,res) => {
   res.render("howtovote.ejs")
 })
-app.get('/adminpage', (req,res) => {
-  res.render("adminpage.ejs")
-})
+app.get('/adminpage', (req, res) => {
+  // check if the user is authenticated and has the admin role
+  if (!req.session.isAuthenticated || req.session.user.role !== 'admin') {
+    // if not, redirect to the login page
+    return res.redirect('/adminlogin');
+  }
+  // if yes, render the admin page
+  res.render('adminpage.ejs');
+});
 app.get('/adminlogin', (req,res) => {
   res.render("admin_login.ejs")
 })
@@ -487,10 +498,12 @@ app.post('/adminlogin', function(req, res) {
     if (err) throw err;
     if (result.length > 0) {
       // Login successful
+    req.session.isAuthenticated = true;
+    req.session.user = { u_name, role: 'admin' };
       res.redirect('/adminpage');
     } else {
       // Login failed
-      res.send('Invalid username or password');
+      res.redirect('/incorrect');
     }
   });
 });

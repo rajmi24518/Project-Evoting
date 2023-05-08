@@ -6,8 +6,7 @@
 <body>
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/">Go back</a></li>
+            <li>E-Voting Admin Dashboard</li>
         </ul>
     </nav>
     <form action="/insert" method="POST" enctype="multipart/form-data">
@@ -30,6 +29,9 @@
         <input type="file" id="image" name="image"><br>
     
         <input type="submit" value="Submit" class ="custom-btn">
+    </form>
+    <form id="logout-form" action="/adminlogout" method="post">
+      <input type="submit" value="Logout" class ="custom-btn">
     </form>
     <div class="delete-container">
         <form action="/cdelete" method="POST">
