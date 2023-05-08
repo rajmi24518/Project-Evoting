@@ -12,9 +12,16 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 require('dotenv').config();
 const ejs = require('ejs');
+const session = require('express-session');
 var tokenExpiration =  60 * 1000;
 var tokens = {};
 const port = process.env.PORT || 4000;
+app.use(session({
+  secret: 'your secret key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } 
+}));
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -241,9 +248,10 @@ app.use("/img", express.static("img"));
 app.use("/js", express.static("js"));
 app.use("/uploads", express.static("uploads"));
 
-app.get('/', (req,res) => {
-    res.render("index.ejs")
-})
+app.get('/', (req, res) => {
+  // Render the index.ejs file and pass in the session variable
+  res.render('index', { session: req.session });
+});
 
 app.get('/login', (req,res) => {
     res.render("login.ejs")
@@ -486,7 +494,13 @@ app.post('/adminlogin', function(req, res) {
     }
   });
 });
+app.post('/admin/pushresult', (req, res) => {
+  // Toggle the session variable to show or hide the button
+  req.session.showNavButton = !req.session.showNavButton;
 
+  // Redirect back to the admin page
+  res.redirect('/adminpage');
+});
 
 //end routes
 function isValidToken(token) {

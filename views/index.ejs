@@ -17,8 +17,13 @@
 				<a href="aboutus" >About Us</a>
 				<a href="contactus">Contact Us</a>
 				<a href="/howtovote"> How To Vote? </a>
+				<% if (session.showNavButton) { %>
+					  <a href="/result">View Results</a>
+					</div>
+				  <% } %>
 			</div>
 		<div class="menub">
+			
 			<a href="login">VOTE</a>
 		</div>
 	</nav>
