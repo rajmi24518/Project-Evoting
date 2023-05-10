@@ -162,7 +162,7 @@ app.post("/register", function(req, res) {
                     from: 'evotingproject2080@gmail.com',
                     to: email,
                     subject: 'Your unique link to the voting page',
-                    html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="https://evoting2080.onrender.com/vote/${token}">https://evoting2080.onrender.com/vote/${token}/</a></p>`
+                    html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="http://localhost:4000/vote/${token}">http://localhost:4000/vote/${token}/</a></p>`
                   };
                   
                   transporter.sendMail(mailOptions, function(error, info) {
@@ -363,7 +363,7 @@ app.get('/vote/:token', function(req, res) {
   // retrieve presidential candidates from MySQL database
   connection.query('SELECT * FROM candidates WHERE position = "president"', (err, rows, fields) => {
       if (err) throw err;
-      candidates = rows;
+      candidates = rows; 
 
       // retrieve vice presidential candidates from MySQL database
       connection.query('SELECT * FROM candidates WHERE position = "vicepresident"', (err, rows, fields) => {
@@ -387,6 +387,11 @@ app.get('/vote/:token', function(req, res) {
 
                   // check if token is valid and render voting page
                   if (isValidToken(token)) {
+                    const sql3 = 'INSERT INTO sql12615458.votedperson (national_id) VALUES (?)';
+                    const values3 = [nid];
+                    connection.query(sql3, values3, (error3, result3) => {
+                      if(error3){console.error('error:',error3)}
+                    });
                       res.render('votingpage.ejs', {
                           token: token,
                           nid: nid,
@@ -458,11 +463,6 @@ app.post('/vote/:token', (req, res) => {
   const vicepresident = req.body.vicepresident;
   const mayor = req.body.mayor;
   const member = req.body.member;
-  const sql3 = 'INSERT INTO sql12615458.votedperson (national_id) VALUES (?)';
-  const values3 = [nid];
-  connection.query(sql3, values3, (error3, result3) => {
-    if(error3){console.error('error:',error3)}
-  });
   bcrypt.hash(nid, saltRounds, function(err, hashedNid) {
   const sql = 'INSERT INTO sql12615458.voted_list (national_id,president, vicepresident,mayor,member) VALUES (?, ?, ?, ?, ?)';
   const values = [hashedNid,president, vicepresident,mayor,member];

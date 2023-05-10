@@ -4,9 +4,13 @@
 	<meta charset="utf-8">
 	<title>Voting Page</title>
 	<link rel="stylesheet" type="text/css" href="/css/votingpage.css">
+	<link rel="shortcut icon" type="image/png" href="img/favicon.png">
 </head>
 <body>
-	<h4>your nid is <%=nid%></h4>	
+	<div style="display:flex;justify-content:space-between;">
+		<h4>NID: <%=nid%></h4>
+		<h4>Time Remaining: <span id="timer">30 seconds left</span></h4>
+	  </div>
 	<section class="candidates">
 		<h2>Presidential Candidates</h2>
 		<form action="/vote/<%= token %>" method="POST">
@@ -79,10 +83,6 @@
 			<input type="submit" value="Submit Vote">
 		</form>
 	</section>
-	
-	<h1>Time Remaining:--> </h1>
-
-    <div id="timer">30 seconds left</div> 
 	<script>
 		// Set the time for the timer in seconds
 	 var timeLeft = 300;
