@@ -162,7 +162,7 @@ app.post("/register", function(req, res) {
                     from: 'evotingproject2080@gmail.com',
                     to: email,
                     subject: 'Your unique link to the voting page',
-                    html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="http://localhost:4000/vote/${token}">http://localhost:4000/vote/${token}/</a></p>`
+                    html: `<p>Hi there,</p><p>Please use the following link to access your voting page:</p><p><a href="https://evoting2080.onrender.com/vote/${token}"><b>https://evoting2080.onrender.com/vote/${token}/</b></a></p>`
                   };
                   
                   transporter.sendMail(mailOptions, function(error, info) {
