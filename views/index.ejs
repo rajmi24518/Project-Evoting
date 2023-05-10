@@ -18,10 +18,9 @@
 				<a href="aboutus" >About Us</a>
 				<a href="contactus">Contact Us</a>
 				<a href="/howtovote"> How To Vote? </a>
-				<% if (session.showNavButton) { %>
-					  <a href="/result">View Results</a>
-					</div>
-				  <% } %>
+				<!-- <a href="/count">Result</a> -->
+				<!-- <div class="menu" id="result-button-container"></div> -->
+
 			</div>
 		<div class="menub">
 			
@@ -49,5 +48,21 @@
 	</div>
 </div>
 	<script type="text/javascript" src="js/main.js"></script>
+	<script>
+		fetch('/count')
+		  .then(response => response.json())
+		  .then(data => {
+			if (data.redirect === '/result') {
+			  const resultButton = document.createElement('a');
+			  resultButton.className = 'result-button';
+			  resultButton.href = '/result';
+			  resultButton.textContent = 'Result';
+			  document.querySelector('.menu').appendChild(resultButton);
+			}
+		  })
+		  .catch(error => {
+			console.error('Error fetching result:', error);
+		  });
+	  </script>
 </body>
 </html>

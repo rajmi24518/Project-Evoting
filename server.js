@@ -507,13 +507,71 @@ app.post('/adminlogin', function(req, res) {
     }
   });
 });
-app.post('/admin/pushresult', (req, res) => {
-  // Toggle the session variable to show or hide the button
-  req.session.showNavButton = !req.session.showNavButton;
+// app.post('/admin/pushresult', (req, res) => {
+//   // Toggle the session variable to show or hide the button
+//   req.session.showNavButton = !req.session.showNavButton;
 
-  // Redirect back to the admin page
-  res.redirect('/adminpage');
+//   // Redirect back to the admin page
+//   res.redirect('/adminpage');
+// });
+app.post('/publish', (req, res) => {
+  var r = 1;
+  var id=1;
+
+    var sql = `UPDATE sql12615458.publish_result SET resval='${r}' WHERE ID='${id}'`;
+    connection.query(sql, [r, id] ,function(error,result)
+    {
+      if (error)
+      {
+        console.log(error);
+        res.redirect('/adminpage');
+      }
+      else
+      {
+        res.redirect('/adminpage');
+      }
+    });
+    
+    
 });
+
+app.post('/extract', (req, res) => {
+  var r =0;
+  var id=1;
+
+    var sql = `UPDATE sql12615458.publish_result SET resval='${r}' WHERE ID='${id}'`;
+    connection.query(sql, [r, id] ,function(error,result)
+    {
+      if (error)
+      {
+        console.log(error);
+        res.redirect('/adminpage');
+      }
+      else
+      {
+        res.redirect('/adminpage');
+      }
+    });
+});
+
+app.get('/count', (req, res) => {
+  var re = 1;
+  var id = 1;
+  var sql = `SELECT * FROM sql12615458.publish_result WHERE resval = '${re}' AND ID = '${id}'`;
+
+  connection.query(sql, function (error, result) {
+    if (result && result.length > 0) { // Check if the result array has at least one element
+      res.json({ redirect: '/result' }); // Return a JSON response with a redirect property
+    } else {
+      res.json({ redirect: '/noresult' }); // Return a JSON response with a redirect property
+    }
+  });
+});
+
+
+app.get('/noresult', (req,res) => {
+  res.render("noresult.ejs")
+})
 
 //end routes
 function isValidToken(token) {
