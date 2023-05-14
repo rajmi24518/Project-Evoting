@@ -2,7 +2,6 @@ const express = require("express");
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const app = express();
-const sessions = require('express-session');
 const bcrypt = require("bcrypt") //importing bcrypt hash
 const LocalStrategy = require("passport-local").Strategy
 const saltRounds = 10;
@@ -12,7 +11,7 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 require('dotenv').config();
 const ejs = require('ejs');
-const session = require('express-session');
+const session = require('cookie-session');
 var tokenExpiration =  60 * 1000;
 var tokens = {};
 const port = process.env.PORT || 4000;
