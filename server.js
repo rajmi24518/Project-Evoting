@@ -54,9 +54,7 @@ app.post("/register", function(req, res) {
     var firstname = req.body.f_name;
     var middlename = req.body.m_name;
     var lastname = req.body.l_name;
-    var NID = req.body.nid;
-    var emaill = req.body.email;
-    var PN = req.body.phone;
+   
    
     console.log('Pass:',PW);
   
